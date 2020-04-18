@@ -1,0 +1,76 @@
+service: yamaha-firmware-notify
+provider:
+  name: aws
+  runtime: python3.7
+  region: ap-northeast-1
+  environment: ${file(env-${self:custom.stage}.yml)}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ssm:*"
+      Resource:
+        - "arn:aws:ssm:ap-northeast-1:*:parameter/*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+custom:
+  stage: "${opt:stage, self:provider.stage}"
+
+plugins:
+  - serverless-python-requirements
+pythonRequirements:
+  dockerizePip: true
+  dockerImage: sls-python3.7:latest
+
+package:
+  exclude:
+    - env/**
+    - .Python
+    - tests/**
+
+functions:
+  handler:
+    description: 'YAMAHA ネットワーク機器の Firmeware 更新情報をチェックして Slack チャンネルに通知します'
+    handler: handler.handler
+    memorySize: 128
+    timeout: 60
+    events:
+      - schedule: cron(0 0 * * ? *)
+    tags:
+      Author: inokappa
+
+resources:
+  Resources:
+    HandlerLogGroup:
+      Properties:
+        RetentionInDays: "1"
+    HandlerDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: machine
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: machine
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        Tags: 
+          - 
+            Key: "Author"
+            Value: "inokappa"
+          - 
+            Key: "Lambda Function"
+            Value: ${self:service}

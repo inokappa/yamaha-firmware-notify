@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  myservice:
+    container_name: myservice
+    tty: true
+    env_file: env-dev
+    environment:
+      - AWS_REGION=ap-northeast-1
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    image: inokappa/python-debug
+    volumes:
+      - .:/work
+    working_dir: /work

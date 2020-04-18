@@ -1,0 +1,8 @@
+SLACK_CHANNEL: "#your-slack-channel"
+SLACK_USERNAME: "YAMAHA Firmware Release Check"
+SLACK_ICON_EMOJI: ":police_car:"
+FIRMWARE_RELEASE_URL: "https://rtxpro.com/?feed=rss2"
+YAMAHA_URL: "http://www.rtpro.yamaha.co.jp/RT/firmware/"
+SSM_PARAMETER_NAME: "your-parameter-name"
+MACHINES: "RTX1200,WLX402,SWX2210-8G" # Set the name of your Yamaha network device,
+DYNAMODB_TABLE: "yamaha-firmware-notify"

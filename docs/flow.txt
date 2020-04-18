@@ -1,0 +1,8 @@
+@startuml
+Lambda -> rtxpro.com : RSS Request
+rtxpro.com -> Lambda : RSS Read
+Lambda -> Lambda : RSS Parse
+Lambda -> DynamoDB : Write to Table
+DynamoDB -> Lambda : Write Success
+Lambda -> Slack : Notification
+@enduml
