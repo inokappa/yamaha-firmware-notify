@@ -1,4 +1,4 @@
-# yamaha-firmware-notify ![](https://github.com/inokapp/yamaha-firmware-notify/workflows/CI%20on%20Push/badge.svg)
+# yamaha-firmware-notify ![CI on Push](https://github.com/inokappa/yamaha-firmware-notify/workflows/CI%20on%20Push/badge.svg)
 
 ## About
 
