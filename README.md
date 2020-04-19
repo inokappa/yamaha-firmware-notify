@@ -1,5 +1,5 @@
 # yamaha-firmware-notify
-
+[](https://github.com/inokapp/yamaha-firmware-notify/workflows/CI%20on%20Push/badge.svg)
 ## About
 
 * YAMAHA ネットワーク機器のファームウェア更新情報を Slack チャンネルに通知する Lambda 関数です
