@@ -12,9 +12,9 @@ jobs:
           docker-compose up -d
       - name: Setup dependencies
         run: |
-          docker-compose exec myservice \
+          docker-compose exec -T myservice \
             pip install -r requirements.txt
       - name: Run test 
         run: |
-          docker-compose exec myservice \
+          docker-compose exec -T myservice \
             pytest --verbose --disable-warnings
