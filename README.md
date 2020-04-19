@@ -73,9 +73,20 @@ $ docker exec -t -i --rm myservice bash
 bash-5.0# pip install -r requirements.txt
 ```
 
+or
+
+```sh
+$ docker-compose exec myservice pip install -r requirements.txt
+```
+
 ### Run test
 
 ```sh
 bash-5.0# pytest --verbose --disable-warnings test_handler.py
 ```
 
+or
+
+```sh
+$ docker-compose exec myservice pytest --verbose --disable-warnings test_handler.py
+```
