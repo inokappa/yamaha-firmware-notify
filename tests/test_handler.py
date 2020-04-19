@@ -4,7 +4,7 @@ import boto3
 from moto import mock_dynamodb2
 from moto import mock_ssm
 
-from handler import write_table, get_ssm_parameter
+from handler import *
 
 
 class TestHandler:

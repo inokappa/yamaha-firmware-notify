@@ -1,0 +1,20 @@
+name: CI on push
+on: [push]
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Build test infrastructure
+        run: |
+          docker-compose build
+          docker-compose up -d
+      - name: Setup dependencies
+        run: |
+          docker-compose exec myservice \
+            pip install -r requirements.txt
+      - name: Run test 
+        run: |
+          docker-compose exec myservice \
+            pytest --verbose --disable-warnings
