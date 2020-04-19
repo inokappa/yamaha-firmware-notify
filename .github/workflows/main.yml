@@ -1,4 +1,4 @@
-name: CI on push
+name: CI_on_push
 on: [push]
 jobs:
   pytest:
