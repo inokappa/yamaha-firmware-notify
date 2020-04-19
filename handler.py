@@ -27,7 +27,7 @@ def get_ssm_parameter(param_name):
             WithDecryption=True
         )
         return res
-    except:
+    except ClientError as e:
         print('ssm get parameter error.')
         return ''
 
@@ -105,7 +105,8 @@ def handler(event, context):
                 if write_table(machine, rev):
                     text = generate_slack_message(title, rev)
                     post_slack(text)
-                    print('Notified. machine: %s, revision: %s' % (machine, rev))
+                    print('Notified. machine: %s, revision: %s'
+                          % (machine, rev))
                 else:
                     print('Already notified. machine: %s,'
                           'revision: %s' % (machine, rev))

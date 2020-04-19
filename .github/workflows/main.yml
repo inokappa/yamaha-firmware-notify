@@ -1,6 +1,24 @@
 name: CI on Push
 on: [push]
 jobs:
+  pycodestyle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Build test infrastructure
+        run: |
+          docker-compose build
+          docker-compose up -d
+      - name: Setup dependencies
+        run: |
+          docker-compose exec -T myservice \
+            pip install -r requirements.txt
+      - name: Run pycodestyle
+        run: |
+          docker-compose exec -T myservice \
+            pycodestyle ./*.py ./tests/*.py
+
   pytest:
     runs-on: ubuntu-latest
     steps:

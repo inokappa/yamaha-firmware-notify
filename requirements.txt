@@ -3,3 +3,4 @@ requests
 slackweb
 moto
 pytest
+pycodestyle

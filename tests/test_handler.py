@@ -11,10 +11,8 @@ class TestHandler:
     def setup_method(self, method):
         print('SetUp')
 
-
     def teardown_method(self, method):
         print('Teardown')
-
 
     @mock_dynamodb2
     def test_write_table(self):
@@ -34,11 +32,9 @@ class TestHandler:
                 }
             ]
         )
-        
         result = write_table('RTX1200', 'Rev.10.01.78')
-        assert True == result
-    
-    
+        assert True is result
+
     @mock_dynamodb2
     def test_write_table_revision_already_exists(self):
         dynamodb = boto3.client('dynamodb', region_name='ap-northeast-1')
@@ -63,7 +59,7 @@ class TestHandler:
         }
         dynamodb.put_item(TableName='yamaha-firmware-notify', Item=item)
         result = write_table('RTX1200', 'Rev.10.01.78')
-        assert False == result
+        assert False is result
 
     @mock_ssm
     def test_get_ssm_parameter(self):
@@ -72,7 +68,6 @@ class TestHandler:
 
         result = get_ssm_parameter('test')
         assert 'string' == result['Parameter']['Value']
-
 
     @mock_ssm
     def test_get_ssm_parameter_not_exists(self):
