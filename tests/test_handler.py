@@ -17,8 +17,8 @@ class TestHandler:
 
     def test_generate_keystring(self):
         enc_message = generate_keystring('foo', 'bar')
-        decoded = base64.b64decode(enc_message)
-        assert decoded == 'foo+bar'
+        decoded = base64.b64decode(enc_message.encode('ascii'))
+        assert decoded.decode('ascii') == 'foo+bar'
 
     @mock_dynamodb2
     def test_write_table(self):
@@ -38,7 +38,8 @@ class TestHandler:
                 }
             ]
         )
-        result = write_table('RTX1200+Rev.10.01.78')
+        enc_message = generate_keystring('RTX1200', 'Rev.10.01.78')
+        result = write_table(enc_message, 'RTX1200', 'Rev.10.01.78')
         assert True is result
 
     @mock_dynamodb2
@@ -66,7 +67,7 @@ class TestHandler:
             'revision': {'S': 'Rev.10.01.78'},
         }
         dynamodb.put_item(TableName='yamaha-firmware-notify', Item=item)
-        result = write_table(enc_message)
+        result = write_table(enc_message, 'RTX1200', 'Rev.10.01.78')
         assert False is result
 
     @mock_ssm

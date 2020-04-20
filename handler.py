@@ -69,7 +69,7 @@ def post_slack(text):
                  icon_emoji=slack_icon_emoji)
 
 
-def write_table(key):
+def write_table(key, machine, rev):
     dynamodb = boto3.client('dynamodb', region_name=region)
 
     try:
@@ -98,8 +98,8 @@ def write_table(key):
 
 def generate_keystring(machine, rev):
     message = '%s+%s' % (machine, rev)
-    enc_message = base64.b64encode(message)
-    return enc_message
+    enc_message = base64.b64encode(message.encode('utf-8'))
+    return enc_message.decode("ascii")
 
 
 def handler(event, context):
@@ -111,7 +111,7 @@ def handler(event, context):
             if machine in title:
                 rev = get_revision(soup, title)
                 keystring = generate_keystring(machine, rev)
-                if write_table(keystring):
+                if write_table(keystring, machine, rev):
                     text = generate_slack_message(title, rev)
                     post_slack(text)
                     print('Notified. machine: %s, revision: %s'
