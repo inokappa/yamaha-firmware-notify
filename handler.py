@@ -96,7 +96,7 @@ def write_table(key):
         return True
 
 
-def generate_keystring(machine, rev)
+def generate_keystring(machine, rev):
     message = '%s+%s' % (machine, rev)
     enc_message = base64.b64encode(message)
     return enc_message
