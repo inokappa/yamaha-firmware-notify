@@ -1,6 +1,7 @@
 import pytest
-
 import boto3
+import base64
+
 from moto import mock_dynamodb2
 from moto import mock_ssm
 
@@ -14,6 +15,11 @@ class TestHandler:
     def teardown_method(self, method):
         print('Teardown')
 
+    def test_generate_keystring(self):
+        enc_message = generate_keystring('foo', 'bar')
+        decoded = base64.b64decode(enc_message)
+        assert decoded == 'foo+bar'
+
     @mock_dynamodb2
     def test_write_table(self):
         dynamodb = boto3.client('dynamodb', region_name='ap-northeast-1')
@@ -21,18 +27,18 @@ class TestHandler:
             TableName='yamaha-firmware-notify',
             KeySchema=[
                 {
-                    'AttributeName': 'machine',
+                    'AttributeName': 'key',
                     'KeyType': 'HASH'
                 }
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': 'machine',
+                    'AttributeName': 'key',
                     'AttributeType': 'S'
                 }
             ]
         )
-        result = write_table('RTX1200', 'Rev.10.01.78')
+        result = write_table('RTX1200+Rev.10.01.78')
         assert True is result
 
     @mock_dynamodb2
@@ -42,23 +48,25 @@ class TestHandler:
             TableName='yamaha-firmware-notify',
             KeySchema=[
                 {
-                    'AttributeName': 'machine',
+                    'AttributeName': 'key',
                     'KeyType': 'HASH'
                 },
             ],
             AttributeDefinitions=[
                 {
-                    'AttributeName': 'machine',
+                    'AttributeName': 'key',
                     'AttributeType': 'S'
                 },
             ]
         )
+        enc_message = generate_keystring('RTX1200', 'Rev.10.01.78')
         item = {
+            'key': {'S': enc_message},
             'machine': {'S': 'RTX1200'},
             'revision': {'S': 'Rev.10.01.78'},
         }
         dynamodb.put_item(TableName='yamaha-firmware-notify', Item=item)
-        result = write_table('RTX1200', 'Rev.10.01.78')
+        result = write_table(enc_message)
         assert False is result
 
     @mock_ssm

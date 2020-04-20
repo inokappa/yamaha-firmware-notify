@@ -57,11 +57,11 @@ resources:
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: machine
+            AttributeName: key
             AttributeType: S
         KeySchema:
           -
-            AttributeName: machine
+            AttributeName: key
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1

@@ -4,6 +4,7 @@ import boto3
 from botocore.exceptions import ClientError
 import requests
 import bs4
+import base64
 import slackweb
 import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -68,18 +69,19 @@ def post_slack(text):
                  icon_emoji=slack_icon_emoji)
 
 
-def write_table(machine, rev):
+def write_table(key):
     dynamodb = boto3.client('dynamodb', region_name=region)
 
     try:
         dynamodb.put_item(
             TableName=dynamodb_table,
             Item={
+                'key': {'S': key},
                 'machine': {'S': machine},
                 'revision': {'S': rev}
             },
             Expected={
-                'revision': {
+                'key': {
                     'Exists': False
                 }
             }
@@ -94,6 +96,12 @@ def write_table(machine, rev):
         return True
 
 
+def generate_keystring(machine, rev)
+    message = '%s+%s' % (machine, rev)
+    enc_message = base64.b64encode(message)
+    return enc_message
+
+
 def handler(event, context):
     res = requests.get(firmware_release_note_url)
     res.raise_for_status()
@@ -102,7 +110,8 @@ def handler(event, context):
         for title in titles:
             if machine in title:
                 rev = get_revision(soup, title)
-                if write_table(machine, rev):
+                keystring = generate_keystring(machine, rev)
+                if write_table(keystring):
                     text = generate_slack_message(title, rev)
                     post_slack(text)
                     print('Notified. machine: %s, revision: %s'
